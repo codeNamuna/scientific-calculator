@@ -1,0 +1,1577 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define pi 3.142857
+#define e 2.718035
+#include "graphics.h"
+int stat;
+int midx;
+int midy;
+int zpos;
+int ppos;
+int br_stat;
+int brc;
+int bpos;
+void quit_me()
+{
+ closegraph();
+ printf("Math Error");
+ getch();
+ exit(1);
+}
+float power(float x,int p)
+{
+ float c;
+ int i;
+ if(p<0)
+ x=1.0000/x;
+
+ c=x;
+
+ if(p==0)
+ return 1.0000;
+
+ else
+ {
+ for(i=1;i<p;i++)
+ c*=x;
+ return c;
+ }
+ }
+
+float fact(float num)
+{
+ float i;
+ float fact=1.0000;
+ if(num==0)
+ return 1.000;
+ else
+ {
+ for(i=1;i<=num;i++)
+ fact*=i;
+ return fact;
+ }
+ }
+
+float modd(float x)
+{
+ if(x<0)
+ x*=-1;
+ return x;
+ }
+
+float decimalizer(float a)
+{
+
+ if(a<0)
+ a*=-1;
+
+ while(a>=1000)
+ a-=1000;
+ while(a>=100)
+ a-=100;
+ while(a>=1)
+ a-=1;
+
+ return a;
+
+	 }
+
+float expo(float x)
+{
+ int i;
+ float sum;
+ for(i=0;i<=50;i++)
+ {
+  sum+=power(x,i)/fact(i);
+  }
+ return sum;
+ }
+
+float ln(float x)
+{
+ float n=1;
+ float sum=0;
+ if(x<=0)
+ {
+  quit_me();
+  }
+  else
+  {
+    for(n=1;n<=97;n+=2)
+    {
+     sum+=power(((x-1)/(x+1)),n)/n;
+     }
+    sum*=2;
+   }
+  return sum;
+   }
+
+float sqrut(float x)
+{
+ float i,j,min,ptr,flag,dx,dbx,ret;
+ min=x;
+ ptr=flag=0;
+
+ if(x<0)
+ quit_me();
+
+ for(i=0;i<=100;i++)
+ {
+  j=i*i;
+  if(modd(x-j)<min)
+  {
+    min=modd(x-j);
+    ptr=i;
+   }
+  if(x==j)
+  {
+   flag=1;
+   ret=i;
+   }
+    }
+
+ if(flag==0)
+ {
+  j=ptr;
+  i=j*j;
+  dx=x-i;
+  dbx=1/(2*j);
+  ret=dbx*dx;
+  ret+=j;
+    }
+  return ret;
+  }
+
+float sine(float x)
+{
+ float cur;
+ int i,flag=0;
+ cur=0.00;
+ x*=pi/180.00;
+ for(i=1;i<=15;i+=2,flag++)
+ {
+  cur+=power(-1,flag)*power(x,i)/fact(i);
+  }
+ return cur;
+}
+
+float cose(float x)
+{
+ float cur=0.00;
+ int i,flag=0;
+ x*=pi/180.00;
+ for(i=0;i<=12;i+=2,flag++)
+ {
+  cur+=power(-1,flag)*power(x,i)/fact(i);
+ }
+ return cur;
+}
+
+float tane(float x)
+{
+ return (sine(x)/cose(x));
+}
+
+float invsine(float x)
+{
+ int t;
+ float i,j,mult,addi;
+ addi=0;
+ if(x<=0.7)
+ t=100;
+ else
+ t=2250;
+ for(i=1;i<=t;i+=2)
+ {
+  mult=1;
+  for(j=1;j<i;j+=2)
+  {
+   mult*=j/(j+1);
+  }
+  mult*=power(x,i)/i;
+  addi+=mult;
+   }
+ addi*=180.00/pi;
+ return addi;
+}
+
+float invcose(float x)
+{
+ float res;
+ res=90.00-invsine(x);
+ return res;
+}
+
+float invtane(float x)
+{
+ int mult,i,flag=0;
+ float mod,sum=0.00;
+
+ if(x<0)
+  mod=x/(-1.0000);
+ else
+  mod=x;
+
+ if(mod<1)
+ {
+  for(i=1;i<=9;i+=2,flag++)
+   {
+    if(flag%2==0)
+    mult=1;
+    else
+    mult=-1;
+    sum+=mult*power(x,i)/i;
+    }
+      }
+
+ else
+ {
+  for(i=1;i<=9;i+=2,flag++)
+  {
+   if(flag%2==0)
+   mult=-1;
+   else
+   mult=1;
+   sum+=mult*power(x,-i)/i;
+   }
+  if(x>=1)
+  sum+=pi/2;
+  else
+  sum-=pi/2;
+  }
+
+ sum*=180.00/pi;
+ return sum;
+
+}
+
+float hsine(float x)
+{
+ float cur;
+ int i;
+ cur=0.00;
+ for(i=1;i<=15;i+=2)
+ {
+  cur+=power(x,i)/fact(i);
+  }
+ return cur;
+}
+
+float hcose(float x)
+{
+ float cur=0.00;
+ int i;
+ for(i=0;i<=12;i+=2)
+ {
+  cur+=power(x,i)/fact(i);
+ }
+ return cur;
+}
+
+float htane(float x)
+{
+ return (hsine(x)/hcose(x));
+}
+
+float npr(float n, float r)
+{
+  float calc=1;
+  if(((decimalizer(n)!=0.0)&&(decimalizer(r)!=0.0))||(n<r))
+  {
+   quit_me();
+    }
+
+  else
+  {
+   calc=fact(n)/fact(n-r);
+   }
+  return calc;
+  }
+
+float ncr(float n, float r)
+{
+  float calc=1;
+  if((decimalizer(n)!=0.0)||(decimalizer(r)!=0.0)||(n<r))
+  {
+   quit_me();
+    }
+
+  else
+  {
+   calc=fact(n)/(fact(r)*fact(n-r));
+   }
+  return calc;
+  }
+
+float floater(char * c)
+{
+ char ch;
+ int i=0;
+ int p;
+ float j,k,r;
+ k=0;
+
+ while((c[i]!='.')&&(c[i]!='\0'))
+ {
+  p=c[i]-48;
+  k=k*10+(float)p;
+  i++;
+  }
+
+ if(c[i]=='.')
+ i++;
+
+ p=0;
+ j=0;
+
+ while(c[i]!='\0')
+ {
+   j=j*10+(c[i]-48);
+   i++;
+   p++;
+  }
+
+ j/=power(10.0,p);
+ r=k+j;
+
+ return r;
+
+ }
+
+float arithmetic(float * num, char * oper,int n)
+{
+char ch=0;
+int i,c;
+i=0;
+while(oper[i]!='A')
+{
+ ch=oper[i];
+ if((ch=='*')||(ch=='/'))
+ {
+     if(ch=='*')
+	num[i]*=num[i+1];
+     else
+	{
+	num[i]/=num[i+1];
+	if(num[i+1]==0)
+	quit_me();
+	}
+     for(c=i+1;c<n;c++)
+     num[c]=num[c+1];
+     for(c=i;oper[c-1]!='A';c++)
+     oper[c]=oper[c+1];
+
+  n--;
+ }
+ else
+ {
+     i++;
+ }
+ }
+
+i=0;
+
+while(oper[i]!='A')
+{
+ ch=oper[i];
+ if(ch=='+')
+ num[i]+=num[i+1];
+ else
+ num[i]-=num[i+1];
+
+ for(c=i+1;c<n;c++)
+ num[c]=num[c+1];
+ for(c=i;oper[c-1]!='A';c++)
+ oper[c]=oper[c+1];
+ n--;
+
+}
+return num[0];
+}
+
+void animation_1(int x,int y)
+{
+ int i,c;
+ for(i=0;i<10;i++)
+ {
+  if(i%2==0)
+  c=15;
+  else
+  c=0;
+  setcolor(c);
+  setfillstyle(1,c);
+  bar(x-30,y+8,x-22,y+10);
+  delay(175);
+  }
+ setcolor(15);
+ settextstyle(0,0,1);
+ outtextxy(x-30,y,"HELLO WORLD!");
+ for(i=0;i<16;i++)
+ {
+  if(i%2==0)
+  c=15;
+  else
+  c=0;
+  setcolor(c);
+  setfillstyle(1,c);
+  bar(x+65,y+8,x+73,y+10);
+  delay(175);
+  }
+ }
+void aniplus(int x,int y)
+{
+ setcolor(0);
+ setfillstyle(1,0);
+ bar(x+100,y+40,x+110,y+120);
+ bar(x+65,y+75,x+145,y+85);
+ circle(x+105,y+42,5);
+ floodfill(x+105,y+39,0);
+ circle(x+105,y+119,5);
+ floodfill(x+105,y+121,0);
+ circle(x+66,y+80,5);
+ floodfill(x+63,y+80,0);
+ circle(x+144,y+80,5);
+ floodfill(x+146,y+80,0);
+ }
+
+void animinus(int x,int y)
+{
+ setcolor(0);
+ setfillstyle(1,0);
+ bar(x+65,y+75,x+145,y+85);
+ circle(x+66,y+80,5);
+ floodfill(x+63,y+80,0);
+ circle(x+144,y+80,5);
+ floodfill(x+146,y+80,0);
+ }
+
+void anidiv(int x,int y)
+{
+ setcolor(0);
+ setfillstyle(1,0);
+ bar(x+65,y+75,x+145,y+85);
+ circle(x+66,y+80,5);
+ floodfill(x+63,y+80,0);
+ circle(x+144,y+80,5);
+ floodfill(x+146,y+80,0);
+ circle(x+105,y+56,10);
+ circle(x+105,y+106,10);
+ floodfill(x+105,y+56,0);
+ floodfill(x+105,y+106,0);
+ }
+
+void anisine(int x,int y)
+{
+ setcolor(0);
+ settextstyle(6,0,9);
+ x-=10;
+ y-=35;
+ outtextxy(x+65,y+40,"sin");
+ outtextxy(x+66,y+41,"sin");
+ outtextxy(x+67,y+42,"sin");
+ outtextxy(x+65,y+41,"sin");
+ outtextxy(x+66,y+41,"sin");
+ outtextxy(x+67,y+41,"sin");
+ outtextxy(x+65,y+42,"sin");
+ outtextxy(x+66,y+42,"sin");
+			    }
+
+void anicose(int x,int y)
+{
+ setcolor(0);
+ settextstyle(6,0,9);
+ x-=25;
+ y-=35;
+ outtextxy(x+65,y+40,"cos");
+ outtextxy(x+66,y+41,"cos");
+ outtextxy(x+67,y+42,"cos");
+ outtextxy(x+65,y+41,"cos");
+ outtextxy(x+66,y+41,"cos");
+ outtextxy(x+67,y+41,"cos");
+ outtextxy(x+65,y+42,"cos");
+ outtextxy(x+66,y+42,"cos");
+			    }
+void anitane(int x,int y)
+{
+ setcolor(0);
+ settextstyle(6,0,9);
+ x-=20;
+ y-=35;
+ outtextxy(x+65,y+40,"tan");
+ outtextxy(x+66,y+41,"tan");
+ outtextxy(x+67,y+42,"tan");
+ outtextxy(x+65,y+41,"tan");
+ outtextxy(x+66,y+41,"tan");
+ outtextxy(x+67,y+41,"tan");
+ outtextxy(x+65,y+42,"tan");
+ outtextxy(x+66,y+42,"tan");
+			    }
+void aninum(int  pts[][4],int n)
+{
+ int num,i,j,k,s;
+ char c[2];
+ settextstyle(3,0,4);
+ setcolor(0);
+ setfillstyle(1,15);
+ for(k=0;k<n;k++)
+ {
+ for(s=0;s<3;s++)
+ {
+ for(i=0;i<140;i+=35)
+ {
+ num=i/35+k%5;
+ for(j=0;j<180;j+=19)
+ {
+  c[0]=(char)(num+48);
+  outtextxy(pts[s][0]+13+j,pts[s][1]+4+i,c);
+  if(num==9)
+  num=0;
+  else
+  num++;
+ }
+ }
+ }
+ delay(40);
+ if(n==15)
+ for(i=0;i<3;i++)
+ bar(pts[i][0]+6,pts[i][1]+6,pts[i][2]-6,pts[i][3]-6);
+ }
+}
+
+void animation_2(int midx,int midy)
+{
+ int x,y,z,i,j,k,t;
+ int bx[4],by[4];
+ int a[]={8,7,15};
+ int b1[6],b2[6];
+ int pts[3][4];
+
+ x=y=0;
+ for(i=0;i<4;i++)
+ {
+  bx[i]=x;
+  by[i]=y;
+  x+=midx*2/3;
+  y+=midy*2/3;
+  }
+ setcolor(15);
+ setfillstyle(1,15);
+ for(k=50;k>=0;k-=2)
+ {
+ for(i=0;i<3;i++)
+ for(j=0;j<3;j++)
+ bar(bx[i]+k,by[j]+k,bx[i+1]-k,by[j+1]-k);
+ delay(2);
+ }
+ setfillstyle(1,0);
+ setcolor(0);
+ for(k=0;k<=6;k++)
+ {
+ for(i=0;i<3;i++)
+ for(j=0;j<3;j++)
+ rectangle(bx[i]+k,by[j]+k,bx[i+1]-k,by[j+1]-k);
+ delay(20);
+ }
+ x=0;
+ y=0;
+ randomize();
+ for(t=0;t<5;t++)
+ {
+ setcolor(0);
+ setfillstyle(1,15);
+ z=0;
+ for(i=0;i<3;i++)
+ {
+   for(j=0;j<3;j++)
+   {
+     if(i==j)
+     {}
+     else
+     {
+     b1[z]=i;
+     b2[z]=j;
+     z++;
+     }
+    }
+  }
+ while(y==x)
+ {
+  y=random(3);
+  }
+ x=y;
+ z=x;
+ anisine(bx[b1[z]],by[b2[z]]);z++;
+ aniplus(bx[b1[z]],by[b2[z]]);z++;
+ anicose(bx[b1[z]],by[b2[z]]);z++;
+ animinus(bx[b1[z]],by[b2[z]]);z++;
+ if(z>5)
+ z=0;
+ anitane(bx[b1[z]],by[b2[z]]);z++;
+ if(z>5)
+ z=0;
+ anidiv(bx[b1[z]],by[b2[z]]);
+ for(i=0;i<3;i++)
+ {
+  pts[i][0]=bx[i];
+  pts[i][1]=by[i];
+  pts[i][2]=bx[i+1];
+  pts[i][3]=by[i+1];
+ }
+ if(t!=4)
+ aninum(pts,15);
+ else
+ aninum(pts,1);
+ setcolor(15);
+ setfillstyle(1,15);
+ if(t!=4)
+ for(i=0;i<3;i++)
+ for(j=0;j<3;j++)
+ bar(bx[i]+6,by[j]+6,bx[i+1]-6,by[j+1]-6);
+ }
+
+ setcolor(0);
+ for(i=0;i<107;i++)
+ {
+  for(j=0;j<3;j++)
+  {
+   rectangle(bx[j]+i,by[1],bx[j+1]-i,by[2]);
+   }
+  delay(1);
+    }
+
+ settextstyle(6,0,9);
+ delay(100);
+ for(i=0;i<3;i++)
+ {
+  delay(115);
+  setcolor(a[i]);
+  outtextxy(bx[0]+60,by[1],"CALCULATOR");
+    }
+ delay(2000);
+       }
+
+void animation_3(int midx,int midy)
+{
+ int i,j;
+ int a[10],b[10];
+ setcolor(15);
+ setfillstyle(1,15);
+ a[0]=10;
+ a[1]=midx+180;
+ a[2]=midx/2;
+ a[3]=midx-115;
+ a[4]=midx*4/3+45;
+ a[5]=midx-30;
+ a[6]=0;
+ a[7]=midx*2-30;
+ a[8]=midx+60;
+ a[9]=midx*2;
+ b[0]=10;
+ b[1]=midy-70;
+ b[2]=midy*2;
+ b[3]=midy-5;
+ b[4]=midy*4/3+35;
+ b[5]=0;
+ b[6]=midy*4/3;
+ b[7]=0;
+ b[8]=midy*2;
+ b[9]=midy*4/3;
+ for(i=0;i<10;i++)
+ {
+  pieslice(a[i],b[i],0,360,150);
+  delay(85);
+  }
+ setbkcolor(15);
+ delay(550);
+ setcolor(4);
+ setfillstyle(1,4);
+ pieslice(midx-130,midy-169,0,360,25);
+ line(midx-155,midy-169,midx-155,midy-194);
+ line(midx-155,midy-194,midx-130,midy-194);
+ floodfill(midx-150,midy-192,4);
+ pieslice(midx-97,midy-189,0,360,10);
+ line(midx-107,midy-189,midx-105,midy-199);
+ line(midx-105,midy-199,midx-97,midy-199);
+ floodfill(midx-104,midy-198,4);
+ putpixel(midx-105,midy-196,4);
+
+ setcolor(12);
+ setfillstyle(1,12);
+ pieslice(midx-125,midy-165,0,360,17);
+ pieslice(midx-96,midy-186,0,360,6);
+
+ setcolor(15);
+ setfillstyle(1,15);
+ pieslice(midx-121,midy-160,0,360,12);
+ pieslice(midx-95,midy-183,0,360,3);
+
+ setcolor(12);
+ settextstyle(6,0,6);
+ outtextxy(midx-101,midy-199,"Calculator");
+ outtextxy(midx+1-101,midy-199,"Calculator");
+
+  }
+
+void highlighter(int x, int y, int t, int c)
+{
+ if(c==4)
+ setfillstyle(1,4);
+ else
+ setfillstyle(1,15);
+ setcolor(4);
+ setlinestyle(0,0,1);
+ if(t==1)
+ {
+  setcolor(14);
+  line(x-5,y+3,x+39,y+3);
+  line(x-7,y+25,x+35,y+25);
+  line(x-7,y+7,x-7,y+25);
+  line(x+39,y+3,x+39,y+22);
+  arc(x-4,y+6,90,180,3);
+  arc(x+36,y+22,270,360,3);
+  floodfill(x-6,y+24,14);
+  if(c!=4)
+  {
+  setcolor(15);
+  line(x-5,y+3,x+39,y+3);
+  line(x-7,y+25,x+35,y+25);
+  line(x-7,y+7,x-7,y+25);
+  line(x+39,y+3,x+39,y+22);
+  arc(x-4,y+6,90,180,3);
+  arc(x+36,y+22,270,360,3);
+  }
+  }
+
+ else if(t==2)
+ {
+  pieslice(x,y,0,360,13);
+  }
+
+ if(c==4)
+ setcolor(15);
+ else
+ setcolor(12);
+
+  }
+
+void icon(int midx,int midy,int i, int c)
+{
+ settextstyle(3,0,2);
+ setfillstyle(1,c);
+ setcolor(c);
+ switch(i)
+ {
+  case 0:
+  setcolor(4);
+  setlinestyle(0,0,3);
+  line(midx-175,midy-90,midx+125,midy-90);
+  line(midx-175,midy-50,midx+125,midy-50);
+  line(midx-180,midy-84,midx-180,midy-55);
+  arc(midx-174,midy-85,91,180,6);
+  arc(midx-174,midy-56,180,270,6);
+  line(midx+130,midy-84,midx+130,midy-55);
+  arc(midx+125,midy-85,0,90,6);
+  arc(midx+125,midy-56,270,360,6);
+  setcolor(c);
+  break;
+
+  case 1:
+  highlighter(midx-165,midy-40,1,c);
+  outtextxy(midx-165,midy-40,"sin");
+  break;
+
+  case 2:
+  highlighter(midx-98,midy-40,1,c);
+  outtextxy(midx-100,midy-40,"cos");
+  break;
+
+  case 3:
+  highlighter(midx-28,midy-40,1,c);
+  outtextxy(midx-30,midy-40,"tan");
+  break;
+
+  case 4:
+  highlighter(midx+40,midy-40,1,c);
+  outtextxy(midx+45,midy-40,"c");
+  settextstyle(2,0,4);
+  outtextxy(midx+39,midy-38,"n");
+  outtextxy(midx+56,midy-24,"r");
+  settextstyle(3,0,2);
+  break;
+
+  case 5:
+  highlighter(midx+100,midy-40,1,c);
+  outtextxy(midx+100,midy-40,"x!");
+  break;
+
+  case 6:
+  highlighter(midx-165,midy-10,1,c);
+  outtextxy(midx-165,midy-10,"sinh");
+  break;
+
+  case 7:
+  highlighter(midx-97,midy-10,1,c);
+  outtextxy(midx-100,midy-10,"cosh");
+  break;
+
+  case 8:
+  highlighter(midx-28,midy-10,1,c);
+  outtextxy(midx-30,midy-10,"tanh");
+  break;
+
+
+  case 9:
+  highlighter(midx+40,midy-10,1,c);
+  outtextxy(midx+45,midy-10,"e");
+  break;
+
+  case 10:
+  highlighter(midx+100,midy-10,1,c);
+  outtextxy(midx+100,midy-10,"ln");
+  break;
+
+
+  case 11:
+  highlighter(midx-165,midy+20,1,c);
+  outtextxy(midx-165,midy+20,"sin");
+  settextstyle(2,0,4);
+  outtextxy(midx-142,midy+23,"-1");
+  settextstyle(3,0,2);
+  break;
+
+  case 12:
+  highlighter(midx-98,midy+20,1,c);
+  outtextxy(midx-100,midy+20,"cos");
+  settextstyle(2,0,4);
+  outtextxy(midx-71,midy+23,"-1");
+  settextstyle(3,0,2);
+  break;
+
+  case 13:
+  highlighter(midx-28,midy+20,1,c);
+  outtextxy(midx-30,midy+20,"tan");
+  settextstyle(2,0,4);
+  outtextxy(midx-3,midy+23,"-1");
+  settextstyle(3,0,2);
+  break;
+
+  case 14:
+  highlighter(midx+40,midy+20,1,c);
+  setlinestyle(0,0,1);
+  line(midx+45,midy+28,midx+45,midy+43);
+  line(midx+45,midy+43,midx+40,midy+40);
+  line(midx+45,midy+28,midx+57,midy+28);
+  outtextxy(midx+48,midy+20,"x");
+  break;
+
+  case 15:
+  highlighter(midx+100,midy+20,1,c);
+  outtextxy(midx+100,midy+25,"^");
+  break;
+
+  case 16:
+  if(c==4)
+  highlighter(midx-146,midy+64,2,c);
+  else
+  pieslice(midx-146,midy+64,0,360,13);
+  setcolor(15);
+  outtextxy(midx-150,midy+50,"7");
+  break;
+
+  case 17:
+  if(c==4)
+  highlighter(midx-84,midy+64,2,c);
+  else
+  pieslice(midx-84,midy+64,0,360,13);
+  setcolor(15);
+  outtextxy(midx-88,midy+50,"8");
+  break;
+
+  case 18:
+  if(c==4)
+  highlighter(midx-18,midy+64,2,c);
+  else
+  pieslice(midx-18,midy+64,0,360,13);
+  setcolor(15);
+  outtextxy(midx-22,midy+50,"9");
+  break;
+
+  case 19:
+  highlighter(midx+40,midy+50,1,c);
+  outtextxy(midx+45,midy+50,"(");
+  break;
+
+  case 20:
+  highlighter(midx+100,midy+50,1,c);
+  outtextxy(midx+100,midy+50,")");
+  break;
+
+  case 21:
+  if(c==4)
+  highlighter(midx-146,midy+94,2,c);
+  else
+  pieslice(midx-146,midy+94,0,360,13);
+  setcolor(15);
+  outtextxy(midx-150,midy+80,"4");
+  break;
+
+  case 22:
+  if(c==4)
+  highlighter(midx-84,midy+94,2,c);
+  else
+  pieslice(midx-84,midy+94,0,360,13);
+  setcolor(15);
+  outtextxy(midx-88,midy+80,"5");
+  break;
+
+  case 23:
+  if(c==4)
+  highlighter(midx-18,midy+94,2,c);
+  else
+  pieslice(midx-18,midy+94,0,360,13);
+  setcolor(15);
+  outtextxy(midx-22,midy+80,"6");
+  break;
+
+  case 24:
+  highlighter(midx+40,midy+80,1,c);
+  outtextxy(midx+45,midy+80,"X");
+  break;
+
+  case 25:
+  highlighter(midx+100,midy+80,1,c);
+  line(midx+99,midy+95,midx+111,midy+95);
+  pieslice(midx+105,midy+91,0,360,1);
+  pieslice(midx+105,midy+99,0,360,1);
+  break;
+
+  case 26:
+  if(c==4)
+  highlighter(midx-146,midy+124,2,c);
+  else
+  pieslice(midx-146,midy+124,0,360,13);
+  setcolor(15);
+  outtextxy(midx-150,midy+110,"1");
+  break;
+
+  case 27:
+  if(c==4)
+  highlighter(midx-84,midy+124,2,c);
+  else
+  pieslice(midx-84,midy+124,0,360,13);
+  setcolor(15);
+  outtextxy(midx-88,midy+110,"2");
+  break;
+
+  case 28:
+  if(c==4)
+  highlighter(midx-18,midy+124,2,c);
+  else
+  pieslice(midx-18,midy+124,0,360,13);
+  setcolor(15);
+  outtextxy(midx-22,midy+110,"3");
+  break;
+
+  case 29:
+  highlighter(midx+40,midy+110,1,c);
+  outtextxy(midx+45,midy+110,"+");
+  break;
+
+  case 30:
+  highlighter(midx+100,midy+110,1,c);
+  line(midx+99,midy+125,midx+111,midy+125);
+  break;
+
+  case 31:
+  highlighter(midx-165,midy+140,1,c);
+  outtextxy(midx-147,midy+140,".");
+  break;
+
+  case 32:
+  if(c==4)
+  highlighter(midx-84,midy+154,2,c);
+  else
+  pieslice(midx-84,midy+154,0,360,13);
+  setcolor(15);
+  outtextxy(midx-88,midy+140,"0");
+  break;
+
+  case 33:
+  highlighter(midx-30,midy+140,1,c);
+  outtextxy(midx-30,midy+140,"AC");
+  break;
+
+  case 34:
+  highlighter(midx+40,midy+140,1,c);
+  outtextxy(midx+40,midy+140,"DEL");
+  break;
+
+  case 35:
+  highlighter(midx+100,midy+140,1,c);
+  outtextxy(midx+100,midy+140,"=");
+  break;
+
+ }
+  }
+
+char hower()
+{
+ char ch;
+ settextstyle(3,0,1);
+ setcolor(12);
+
+ if(zpos==1)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"sin( ");
+  ppos+=29;
+ }
+
+ if(zpos==2)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"cos( ");
+  ppos+=35;
+
+ }
+
+ if(zpos==3)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"tan( ");
+  ppos+=33;
+
+ }
+
+ if(zpos==4)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"(");
+  ppos+=11;
+
+ }
+
+ if(zpos==5)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"!( ");
+  ppos+=11;
+
+ }
+
+ if(zpos==6)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"sinh( ");
+  ppos+=39;
+
+ }
+
+ if(zpos==7)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"cosh( ");
+  ppos+=45;
+
+ }
+
+ if(zpos==8)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"tanh( ");
+  ppos+=43;
+
+ }
+
+ if(zpos==9)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"e");
+  ppos+=11;
+ }
+
+ if(zpos==10)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"ln( ");
+  ppos+=19;
+
+ }
+
+ if(zpos==11)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"sini( ");
+  ppos+=33;
+
+ }
+
+ if(zpos==12)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"cosi( ");
+  ppos+=39;
+
+ }
+
+ if(zpos==13)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"tani( ");
+  ppos+=37;
+
+ }
+
+ if(zpos==14)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"sqrt( ");
+  ppos+=41;
+
+ }
+
+ if(zpos==15)
+ {
+  ch=96+zpos;
+  outtextxy(ppos,midy-83,"pow( ");
+  ppos+=39;
+
+ }
+
+ if(zpos==16)
+ {
+  ch='7';
+  outtextxy(ppos,midy-83,"7");
+  ppos+=11;
+  }
+
+ if(zpos==17)
+ {
+  ch='8';
+  outtextxy(ppos,midy-83,"8");
+  ppos+=11;
+
+  }
+
+ if(zpos==18)
+ {
+  ch='9';
+  outtextxy(ppos,midy-83,"9");
+  ppos+=11;
+
+ }
+
+ if(zpos==19)
+ {
+ ch='(';
+ outtextxy(ppos,midy-83,"(");
+ ppos+=11;
+ }
+
+ if(zpos==20)
+ {
+ ch=')';
+ outtextxy(ppos,midy-83,")");
+ ppos+=11;
+   }
+
+ if(zpos==21)
+ {
+ ch='4';
+ outtextxy(ppos,midy-83,"4");
+ ppos+=11;
+
+ }
+
+ if(zpos==22)
+ {
+ ch='5';
+ outtextxy(ppos,midy-83,"5");
+ ppos+=11;
+
+ }
+
+ if(zpos==23)
+ {
+ ch='6';
+ outtextxy(ppos,midy-83,"6");
+ ppos+=11;
+
+ }
+
+ if(zpos==24)
+ {
+ ch='*';
+ outtextxy(ppos,midy-83,"*");
+ ppos+=12;
+
+ }
+
+ if(zpos==25)
+ {
+ ch='/';
+ outtextxy(ppos,midy-83,"/");
+ ppos+=12;
+ }
+
+ if(zpos==26)
+ {
+ ch='1';
+ outtextxy(ppos,midy-83,"1");
+ ppos+=11;
+
+ }
+
+ if(zpos==27)
+ {
+ ch='2';
+ outtextxy(ppos,midy-83,"2");
+ ppos+=11;
+
+ }
+
+ if(zpos==28)
+ {
+ ch='3';
+ outtextxy(ppos,midy-83,"3");
+ ppos+=11;
+
+ }
+
+ if(zpos==29)
+ {
+ ch='+';
+ outtextxy(ppos,midy-83,"+");
+ ppos+=12;
+
+ }
+
+ if(zpos==30)
+ {
+ ch='-';
+ outtextxy(ppos,midy-83,"-");
+ ppos+=12;
+
+ }
+
+ if(zpos==31)
+ {
+ ch='.';
+ outtextxy(ppos,midy-83,".");
+ ppos+=5;
+ }
+
+ if(zpos==32)
+ {
+ ch='0';
+ outtextxy(ppos,midy-83,"0");
+ ppos+=11;
+
+   }
+
+ if(zpos==35)
+ {
+  ch=27;
+	}
+
+ if(zpos==34)
+ {
+  ch=27;
+  stat=0;
+  }
+
+ return ch;
+
+ }
+
+char cgetch()
+{
+ char ch,c1;
+ ch=0;
+ while((ch!=27)&&(ch!=13))
+ {
+
+  while(!kbhit())
+  {
+
+   setcolor(12);
+   outtextxy(ppos,midy-83,"|");
+   setcolor(15);
+   delay(150);
+   outtextxy(ppos,midy-83,"|");
+   delay(150);
+
+   }
+
+  ch=getch();
+  icon(midx,midy,zpos,12);
+
+  if(ch=='\0'+'K')
+  {
+   if(zpos%5==1)
+   zpos=zpos+4;
+   else
+   zpos--;
+   }
+
+  else if(ch=='\0'+'M')
+  {
+   if(zpos%5==0)
+   zpos-=4;
+   else
+   zpos++;
+   }
+
+  else if(ch=='\0'+'H')
+  {
+   if((zpos>=1)&&(zpos<=5))
+   zpos+=30;
+   else
+   zpos-=5;
+   }
+
+  else if(ch=='\0'+'P')
+  {
+   if((zpos>=31)&&(zpos<=35))
+   zpos-=30;
+   else
+   zpos+=5;
+   }
+
+ icon(midx,midy,zpos,4);
+
+ if(ch==13)
+ c1=hower();
+
+ if(ch==27)
+ c1=27;
+
+	     }
+ return c1;
+	       }
+
+float input_me()
+{
+ char ch,temp[100],oper[50];
+ float t1,t2,num[100];
+ int t,o,n;
+ t=o=n=0;
+ ch=0;
+
+ while((ch!=27)&&(ch!=')'))
+ {
+  t=1;
+  ch=cgetch();
+  temp[0]=ch;
+
+  if(ch=='(')
+  {
+   br_stat=1;
+   num[n]=input_me();
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='a')
+  {
+   br_stat=1;
+   num[n]=sine(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='b')
+  {
+   br_stat=1;
+   num[n]=cose(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='c')
+  {
+   br_stat=1;
+   num[n]=tane(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='d')
+  {
+   br_stat=1;
+   t1=input_me();
+   outtextxy(ppos,midy-83,"C");
+   ppos+=15;
+   outtextxy(ppos,midy-83,"(");
+   ppos+=11;
+   t2=input_me();
+   num[n]=ncr(t1,t2);
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='e')
+  {
+   br_stat=1;
+   num[n]=fact(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='f')
+  {
+   br_stat=1;
+   num[n]=hsine(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='g')
+  {
+   br_stat=1;
+   num[n]=hcose(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='h')
+  {
+   br_stat=1;
+   num[n]=htane(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='i')
+  {
+   num[n]=e;
+   n++;
+   ch=getch();
+   }
+
+  else if(ch=='j')
+  {
+   br_stat=1;
+   num[n]=ln(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='k')
+  {
+   br_stat=1;
+   num[n]=invsine(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='l')
+  {
+   br_stat=1;
+   num[n]=invcose(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='m')
+  {
+   br_stat=0;
+   num[n]=invtane(input_me());
+   n++;
+   br_stat=1;
+   ch=cgetch();
+   }
+
+  else if(ch=='n')
+  {
+   br_stat=1;
+   num[n]=sqrut(input_me());
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else if(ch=='o')
+  {
+   br_stat=1;
+   t1=input_me();
+   outtextxy(ppos,midy-83,",");
+   ppos+=11;
+   outtextxy(ppos,midy-83,"(");
+   ppos+=11;
+   t2=input_me();
+   num[n]=power(t1,t2);
+   n++;
+   br_stat=0;
+   ch=cgetch();
+   }
+
+  else
+  {
+   while((ch!=27)&&(ch!=')')&&(ch!='+')&&(ch!='-')&&(ch!='*')&&(ch!='/'))
+   {
+     ch=cgetch();
+     temp[t]=ch;
+     t++;
+   }
+   temp[t-1]='\0';
+   num[n]=floater(temp);
+   n++;
+  }
+
+  oper[o]=ch;
+  o++;
+	  }
+  br_stat=0;
+  o--;
+  oper[o]='A';
+  return (arithmetic(num,oper,n));
+				       }
+
+void main()
+{
+ int gd=DETECT,gm;
+ int i;
+ int c=12;
+ float f;
+ char ch='a',c1[2];
+ brc=15;
+ stat=1;
+
+ initgraph(&gd,&gm,"");
+
+ midx=getmaxx()/2;
+ midy=getmaxy()/2;
+
+ animation_1(midx,midy);
+ animation_2(midx,midy);
+ while(stat==1)
+ {
+ animation_3(midx,midy);
+
+ for(i=0;i<36;i++)
+ icon(midx,midy,i,12);
+
+ zpos=1;
+ ppos=midx-170;
+ icon(midx,midy,1,4);
+
+ f=input_me();
+ closegraph();
+ printf("%f",f);
+ getch();
+ initgraph(&gd,&gm,"");
+ }
+ }
